@@ -14,6 +14,8 @@ void loop() {
   uint16_t lightData = 0;
   uint8_t lightDataCurrent = 0;
   uint8_t count = 0;
+  //Serial.write("\r\n");
+  Serial.println();
 
   while (count < 10)
   {
@@ -30,15 +32,18 @@ void loop() {
   }
   lightData = lightData/10;
   // lightData = analogRead(SENSOR);
-  Serial.print("Average data from sensor: ");
-  Serial.print(lightData);
-  Serial.print("\n\r");
-  if (lightData > 235)
+  Serial.write("Average data from sensor: ");
+
+  if (lightData > 210)
   {
+    Serial.print(lightData);
+    Serial.write(" lamp \"On\"");
     digitalWrite(COOLER, HIGH);
   }
-  if (lightData < 220)
+  if (lightData < 190)
   {
+    Serial.print(lightData);
+    Serial.write(" lamp \"Off\"");
     digitalWrite(COOLER, LOW);
   }
   delay(5000);
