@@ -2,49 +2,70 @@
 
 #define COOLER PB4
 #define SENSOR A3
+#define PERIOD 60
+
+#define DEBUG 1
+//#define DEBUGALL 1
+
+uint8_t lampState;
 
 void setup() {
-  // Serial.begin(9600);
+  lampState = 0;
   digitalWrite(COOLER, LOW);
   pinMode(COOLER, OUTPUT);
   pinMode(SENSOR, INPUT);
 }
 
 void loop() {
-  uint16_t lightData = 0;
+  uint32_t lightData = 0;
   uint8_t lightDataCurrent = 0;
   uint8_t count = 0;
-  //Serial.write("\r\n");
+#ifdef DEBUG
   Serial.println();
-
-  while (count < 10)
+  Serial.write("--");
+#endif
+  while (count < PERIOD)
   {
-    // Serial.print("Data from sensor iteration ");
-    // Serial.print(count);
-    // Serial.print(": ");
     count++;
     lightDataCurrent = 0;
     lightDataCurrent = analogRead(SENSOR);
     lightData += lightDataCurrent;
-    // Serial.print(lightDataCurrent);
-    // Serial.print("\n\r");
-    delay(2000);
+#ifdef DEBUG
+    Serial.print(lightDataCurrent);
+    Serial.println();
+#endif
+    delay(1000);
   }
-  lightData = lightData/10;
-  // lightData = analogRead(SENSOR);
-  Serial.write("Average data from sensor: ");
+#ifdef DEBUG
+  Serial.write("--");
+  Serial.println();
+#endif
+  lightData = lightData/PERIOD;
+#ifdef DEBUGALL
+  Serial.write("Average data: ");
+  Serial.print(lightData);
+  Serial.println();
+#endif
+#ifdef DEBUG
+  Serial.write("Average data: ");
+  Serial.print(lightData);
+#endif
 
-  if (lightData > 210)
+  if ((lightData > 220)&&(!lampState))
   {
-    Serial.print(lightData);
+#ifdef DEBUG
     Serial.write(" lamp \"On\"");
+#endif
     digitalWrite(COOLER, HIGH);
+    lampState = 1;
   }
-  if (lightData < 190)
+  if ((lightData < 190)&&(lampState))
   {
-    Serial.print(lightData);
+#ifdef DEBUG
     Serial.write(" lamp \"Off\"");
+#endif
     digitalWrite(COOLER, LOW);
+    lampState = 0;
   }
-  delay(5000);
+  delay(1000);
 }
