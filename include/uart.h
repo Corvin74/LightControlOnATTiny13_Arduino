@@ -9,7 +9,7 @@
 
 #define UART_DDR    DDRB
 #define UART_PORT   PORTB
-#define UART_TX     0
+#define UART_TX     PB0
 
 static const char CRLF[] PROGMEM = "\r\n";
 
